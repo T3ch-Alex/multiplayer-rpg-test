@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="styles/main.css">
+  </head>
+  <body>
+    <div id="gameWindow">
+      <canvas id="canvas" width="800px" height="500px"></canvas>
+    </div>
+    
+    <div id="chat">
+        <ul class="textContainer" id="messages"></ul>
+        <form class="inputForm" id="chatForm" action="">
+            <input id="chatInput" autocomplete="off" />
+            <button id="chatButtonSend">➤</button>
+        </form>
+    </div>
+    
+    <script src="node_modules/socket.io/client-dist/socket.io.js"></script>
+    <script>
+        var socket = io();
+
+        var messages = document.getElementById('messages');
+        var form = document.getElementById('chatForm');
+        var input = document.getElementById('chatInput');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            var msg = input.value;
+            if(msg) {
+                socket.emit('clientMessage', msg);
+                msg = '';
+            } else { console.log("no message found!");}
+        });
+
+        socket.on('clientMessage', (msg) => {
+            var msgElement = document.createElement('li');
+            msgElement.textContent = msg;
+            messages.appendChild(msgElement);
+        });
+    </script>
+  </body>
+</html>
