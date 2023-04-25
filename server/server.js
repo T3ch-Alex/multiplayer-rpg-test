@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/../public/index.html')); //FIRST WE SERVE ONLY THE HTML!!!
 });
 
-app.use('/', express.static(path.join(__dirname + '/../'))); //THEN WE SERVE THE ENTIRE CLIENT FOLDER OTHERWISE IT WILL NOT LOAD SOCKET.IO LIBRARY ON THE CLIENT!!!!
+app.use('/', express.static(path.join(__dirname + '/../'))); //THEN WE SERVE THE ENTIRE PUBLIC FOLDER OTHERWISE IT WILL NOT LOAD SOCKET.IO LIBRARY ON THE CLIENT!!!!
 
 io.on('connection', (socket) => {
     const socketID = Math.floor(Math.random() * 90000) + 10000;

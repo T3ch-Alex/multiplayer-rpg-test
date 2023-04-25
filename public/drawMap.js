@@ -10,16 +10,16 @@ var map = [
     0,0,0,0,0,0,0,0,0,0,
     0,1,1,1,1,1,1,1,1,0,
     0,1,0,0,0,0,1,0,0,0,
-    0,1,0,0,0,0,1,0,0,0,
-    0,1,0,0,0,0,1,0,0,0,
+    0,1,0,1,1,1,1,1,0,0,
+    0,1,0,1,0,0,1,0,0,0,
+    0,1,1,1,1,1,1,1,1,0,
+    0,1,0,1,0,0,0,0,1,0,
     0,1,1,1,1,1,1,1,1,0,
     0,1,0,0,0,0,0,0,1,0,
-    0,1,1,1,1,1,1,1,1,0,
-    0,1,0,0,0,0,0,0,1,0,
-    0,1,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,
 ];
 
-function drawGame() {
+function drawMap() {
     if(ctx==null) {
         console.log("Error: couldn't get 2D context!");
         return;
@@ -48,12 +48,12 @@ function drawGame() {
     ctx.fillStyle = '#f00';
     ctx.fillText = ('FPS: ' + frameLastSec, 10, 20);
 
-    requestAnimationFrame(drawGame);
+    requestAnimationFrame(drawMap);
 }
 
 window.onload = function() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
-    requestAnimationFrame(drawGame);
+    requestAnimationFrame(drawMap);
     ctx.font = 'bold 1.2em sans-serif';
 }
