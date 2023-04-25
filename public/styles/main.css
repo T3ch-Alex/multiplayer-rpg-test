@@ -22,6 +22,8 @@ canvas {
     padding: 0.8em;
     border-radius: 0.4em;
     border:1px solid lightgrey;
+    width: 50em;
+    height: 30em;
 }
 
 #gameWindow {
