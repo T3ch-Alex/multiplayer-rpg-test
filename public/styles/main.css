@@ -45,6 +45,17 @@ canvas {
     padding: 0.8em;
 }
 
+#messages {
+    overflow-y: auto;
+}
+
+#chatMessage {
+    list-style-type: none;
+    color: #fff;
+    font-size: 1.1em;
+    word-break: break-all;
+}
+
 #chatForm {
     display: flex;
     gap: 0.4em;
@@ -84,10 +95,4 @@ button {
     padding: 0.4em;
     font-size: 1.1em;
     color: #fff;
-}
-
-li {
-    list-style-type: none;
-    color: #fff;
-    font-size: 1.1em;
 }

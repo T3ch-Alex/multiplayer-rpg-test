@@ -6,13 +6,13 @@
   </head>
   <body>
     <div id="gameWindow">
-      <canvas id="canvas" width="400" height="400"></canvas>
+      <canvas id="canvas" width="640" height="360"></canvas>
     </div>
     
     <div id="chat">
         <ul class="textContainer" id="messages"></ul>
         <form class="inputForm" id="chatForm" action="">
-            <input id="chatInput" autocomplete="off" />
+            <input id="chatInput" autocomplete="off" maxlength="250"/>
             <button id="chatButtonSend">➤</button>
         </form>
     </div>
@@ -31,13 +31,16 @@
             if(msg) {
                 socket.emit('clientMessage', msg);
                 msg = '';
+                input.value = '';
             } else { console.log("no message found!");}
         });
 
         socket.on('clientMessage', (msg) => {
             var msgElement = document.createElement('li');
+            msgElement.id = 'chatMessage';
             msgElement.textContent = msg;
             messages.appendChild(msgElement);
+            messages.scrollTop = messages.scrollHeight;
         });
     </script>
     <script type="text/javascript" src="/public/drawMap.js"></script>
