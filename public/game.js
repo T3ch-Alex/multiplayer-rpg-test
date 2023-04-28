@@ -1,5 +1,3 @@
-//import tilesheetJS from '/public/assets/world/tilesheet.js';
-
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
@@ -48,16 +46,33 @@ function update() {
 function drawMap() {
     for(let row = 0; row < map.length; row++) {
         for(let col = 0; col < map[row].length; col++) {
-            var tileIndex = map[row][col];
-
-            var rowSheet = Math.floor(tileIndex / sheetWidth);
-            var colSheet = tileIndex % sheetHeight;
-            var tileX = colSheet * tileSize;
-            var tileY = rowSheet * tileSize;
-
-            ctx.drawImage(tilesheet, tileX, tileY, tileSize, tileSize, col * tileSize, row * tileSize, tileSize, tileSize);
+            var tileMapIndex = map[row][col];
+            var tileSheetX = getTile(tileMapIndex).tileX;
+            var tileSheetY = getTile(tileMapIndex).tileY;
+            ctx.drawImage(tilesheet, tileSheetX, tileSheetY, tileSize, tileSize, col * tileSize, row * tileSize, tileSize, tileSize);
         }
     }
+}
+
+function getTile(tileIndex) {
+    const tileSiz = 32;
+    const sheetRows = 12;
+    const sheetCols = 14;
+    var tileSheetArray = new Array();
+    
+    for(var y = 0; y < sheetRows; y++) {
+        for (var x = 0; x < sheetCols; x++) {
+            let tileCoords = new Array(2);
+            tileCoords[0] = x * tileSiz;
+            tileCoords[1] = y * tileSiz;
+            tileSheetArray.push(tileCoords);
+        }
+    }
+    var index = tileSheetArray[tileIndex];
+    var tileX = tileSheetArray[tileIndex][0];
+    var tileY = tileSheetArray[tileIndex][1];
+
+    return { index, tileX, tileY };
 }
 
 function draw() {
