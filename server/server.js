@@ -11,6 +11,31 @@ const io = new Server(server); //Init new Server object called io with the http 
 const host = 'localhost';
 const port = 3000;
 
+var SOCKET_LIST = {};
+var PLAYER_LIST = {};
+
+var newPlayer = (playerID) => {
+    var self = {
+        x: 120,
+        y: 88,
+        id: playerID,
+        pressingUp: false,
+        pressingDown: false,
+        pressingLeft: false,
+        pressingRight: false,
+        maxSpeed: 10,
+    };
+
+    self.updatePosition = () => {
+        if(self.pressingUp) { self.y -= maxSpeed; }
+        if(self.pressingDown) { self.y += maxSpeed; }
+        if(self.pressingLeft) { self.x -= maxSpeed; }
+        if(self.pressingRight) { self.x += maxSpeed; }
+    }
+
+    return self;
+};
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/../public/index.html')); //FIRST WE SERVE ONLY THE HTML!!!
 });
@@ -18,16 +43,42 @@ app.get('/', (req, res) => {
 app.use('/', express.static(path.join(__dirname + '/../'))); //THEN WE SERVE THE ENTIRE PUBLIC FOLDER OTHERWISE IT WILL NOT LOAD SOCKET.IO LIBRARY ON THE CLIENT!!!!
 
 io.on('connection', (socket) => {
-    const socketID = Math.floor(Math.random() * 90000) + 10000;
-    console.log('user with id: ' + `${socketID}` + ' connected!');
+    socket.id = Math.floor(Math.random() * 90000) + 10000;
+    SOCKET_LIST[socket.id] = socket;
+
+    var player = newPlayer(socket.id);
+    PLAYER_LIST[socket.id] = player;
+    
+    console.log('user with id: ' + `${socket.id}` + ' connected!');
+
     socket.on('disconnect', () => {
-        console.log('user with id: ' + `${socketID}` + ' disconnected');
+        console.log('user with id: ' + `${socket.id}` + ' disconnected');
+        delete SOCKET_LIST[socket.id];
+        delete PLAYER_LIST[socket.id];
     });
 
     socket.on('clientMessage', (msg) => {
-        var clientMsg = socketID + ': ' + msg;
+        var clientMsg = socket.id + ': ' + msg;
         io.emit('clientMessage', clientMsg);
     });
+
+    //Update the client with every data every second
+    setInterval(()=>{
+        var pack = [];
+        for(var i in PLAYER_LIST) {
+            var player = PLAYER_LIST[i];
+            player.updatePosition();
+            pack.push({
+                x: player.x,
+                y: player.y,
+                id: player.id
+            });
+        }
+        for(var i in SOCKET_LIST) {
+            var socket = SOCKET_LIST[i]
+            socket.emit('newPositions', pack);
+        }
+    },1000/60);
 });
 
 server.listen(port, host, () => {

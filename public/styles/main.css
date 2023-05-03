@@ -15,6 +15,7 @@ body {
     align-content: center;
     align-items: center;
     padding: 0.8em;
+    zoom: 95%;
 }
 
 canvas {
@@ -37,7 +38,7 @@ canvas {
     background-repeat: no-repeat;
     background-size: cover;
     border-radius: 0.8em;
-    width: 600px;
+    width: 280px;
     justify-content: center;
     justify-items: center;
     align-content: center;

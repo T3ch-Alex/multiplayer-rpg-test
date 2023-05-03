@@ -5,35 +5,38 @@ var fps = 0;
 var lastTime = performance.now();
 
 //Tiles dimensions
-var tileSize = 32;
-//Map dimensions
-var mapWidth = 16;
-var mapHeight = 15;
-//Tilesheet dimensions
-var sheetWidth = 14;
-var sheetHeight = 12;
-
+const tileSize = 16;
 var tilesheet = new Image();
 tilesheet.src = '/public/assets/world/tilesheet.png';
 
-//document.body.style.zoom = "150%";
+document.body.style.zoom = "250%";
 
 var map = [
-    [14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14],
-    [14, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,14],
-    [14, 1, 1, 2, 2, 1, 2, 2, 1, 1, 1, 2, 2, 2, 1,14],
-    [14, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,14],
-    [14, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,14],
-    [14, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,14],
-    [14, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,14],
-    [14, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1,14],
-    [14, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,14],
-    [14, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,14],
-    [14, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,14],
-    [14, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1,14],
-    [14, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1,14],
-    [14, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1,14],
-    [14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14],
+    [ 30, 30, 30, 30, 75, 19,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30, 30, 75, 19,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30, 30, 93,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30, 75, 19,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30, 93,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30, 93,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30, 93,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30, 93,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30,111, 37,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30, 30,111, 37,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3],
+    [ 30, 30, 30, 30,111, 37,  3,  3,  3,  3,  3,  3,  3,  3,  3]
+];
+
+var mapObjects = [
+    [  0,  0,  0,  0,  0,  0,  0,  0,369,370,371,372,373,369,370],
+    [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,460,461,462,333,334],
+    [  0,  0,324,325,  0,  0,537,538,  0,  0,478,479,480,351,352],
+    [  0,  0,342,343,  0,  0,  0,  0,  0,328,496,497,498,369,370],
+    [  0,  0,  0,  0,  0,  0,  0,  0,  0,329,514,515,516,329,  0],
+    [  0,  0,  0,  0,555,556,  0,  0,  0,  0, 64, 65,  0,  0,  0],
+    [288,289,  0,  0,  0,  0,  0,  0,  0, 11, 82, 83, 12, 12, 12],
+    [306,307,  0,  0,  0,  0,  0,  0,  0, 29, 30, 30, 75, 76, 76],
+    [  0,  0,  0,  0,  0,  0,  0,537,538, 47, 48, 48, 49,  0,  0],
+    [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
+    [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
 ];
 
 function update() {
@@ -44,8 +47,8 @@ function update() {
 }
 
 function drawMap() {
-    for(let row = 0; row < map.length; row++) {
-        for(let col = 0; col < map[row].length; col++) {
+    for(var row = 0; row < map.length; row++) {
+        for(var col = 0; col < map[row].length; col++) {
             var tileMapIndex = map[row][col];
             var tileSheetX = getTile(tileMapIndex).tileX;
             var tileSheetY = getTile(tileMapIndex).tileY;
@@ -54,17 +57,26 @@ function drawMap() {
     }
 }
 
+function drawObjects() {
+    for(var row = 0; row < mapObjects.length; row++) {
+        for(var col = 0; col < mapObjects[row].length; col++) {
+            var tileMapIndex = mapObjects[row][col];
+            var tileSheetX = getTile(tileMapIndex).tileX;
+            var tileSheetY = getTile(tileMapIndex).tileY;
+            ctx.drawImage(tilesheet, tileSheetX, tileSheetY, tileSize, tileSize, col * tileSize, row * tileSize, tileSize, tileSize);
+        }
+    }
+}
+
 function getTile(tileIndex) {
-    const tileSiz = 32;
-    const sheetRows = 12;
-    const sheetCols = 14;
     var tileSheetArray = new Array();
-    
+    const sheetRows = 44;
+    const sheetCols = 18;
     for(var y = 0; y < sheetRows; y++) {
         for (var x = 0; x < sheetCols; x++) {
             let tileCoords = new Array(2);
-            tileCoords[0] = x * tileSiz;
-            tileCoords[1] = y * tileSiz;
+            tileCoords[0] = x * tileSize;
+            tileCoords[1] = y * tileSize;
             tileSheetArray.push(tileCoords);
         }
     }
@@ -77,10 +89,12 @@ function getTile(tileIndex) {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     drawMap();
+    drawObjects();
 
     ctx.fillStyle = '#f00';
-    ctx.font = "24px Arial";
+    ctx.font = "8px Arial";
     ctx.fillText("FPS: " + fps, 10, 20); 
 }
 

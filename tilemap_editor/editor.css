@@ -1,0 +1,62 @@
+html {
+    background-image: linear-gradient(#444,#111);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    justify-items: center;
+    align-content: center;
+    align-items: center;
+    padding: 0.8em;
+    gap: 0.8em;
+    zoom: 95%;
+}
+
+canvas {
+    background-color: rgba(50%, 50%, 50%, 0.5);
+    padding: 0.8em;
+    border-radius: 0.4em;
+    border:1px solid lightgrey;
+}
+
+input {
+    background-color: rgba(50%, 50%, 50%, 0.5);
+    border-radius: 0.4em;
+    border: none;
+    padding: 0.4em;
+    font-size: 1.1em;
+    color: #fff;
+}
+
+button {
+    background-color: rgba(50%, 50%, 50%, 0.5);
+    border-radius: 0.4em;
+    border: none;
+    padding: 0.4em;
+    font-size: 1.1em;
+    color: #fff;
+}
+
+.container {
+    background-color: rgba(50%, 50%, 50%, 0.5);
+    padding: 0.8em;
+    border-radius: 0.4em;
+    border:1px solid lightgrey;
+    width: 340px;
+    height: 960px;
+}
+
+#editor {
+    background-image: linear-gradient(#111, #444);
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 0.8em;
+    border-radius: 0.4em;
+}
