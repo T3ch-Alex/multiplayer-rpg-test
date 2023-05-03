@@ -62,9 +62,15 @@ io.on('connection', (socket) => {
         io.emit('clientMessage', clientMsg);
     });
 
+    socket.on('keyPressed', (data) => {
+        io.emit('keyPressed', data);
+    });
+
     //Update the client with every data every second
     setInterval(()=>{
         var pack = [];
+
+        //get every player state and push to datapack
         for(var i in PLAYER_LIST) {
             var player = PLAYER_LIST[i];
             player.updatePosition();
@@ -74,6 +80,7 @@ io.on('connection', (socket) => {
                 id: player.id
             });
         }
+        //emit the datapack for every socket
         for(var i in SOCKET_LIST) {
             var socket = SOCKET_LIST[i]
             socket.emit('newPositions', pack);

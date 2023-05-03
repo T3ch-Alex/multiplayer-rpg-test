@@ -43,9 +43,27 @@
             messages.scrollTop = messages.scrollHeight;
         });
 
+        socket.on('keyPressed', (data) => {
+          console.log("Pressing: " + data);
+        });
+
+        document.onkeydown = (event) => {
+          let key;
+          if(event.keyCode == 87) {
+            key = 'up';
+            socket.emit('keyPressed', key);
+          } else if(event.keyCode == 83) {
+            key = 'down';
+            socket.emit('keyPressed', key);
+          } else if(event.keyCode == 68) {
+            key = 'right';
+            socket.emit('keyPressed', key);
+          } else if(event.keyCode == 65) {
+            key = 'left';
+            socket.emit('keyPressed', key);
+          }
+        }
         //socket.on new positions
-        //handle keypress up and down
-        //do on the server too
     </script>
     <script type="text/javascript" src="/public/game.js"></script>
   </body>
