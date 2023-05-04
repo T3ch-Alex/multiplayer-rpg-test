@@ -76,28 +76,30 @@ io.on('connection', (socket) => {
     });
 });
 
-//Update the client with every data every second
-setInterval(()=>{
-    var pack = [];
-
-    //get every player state and push to datapack
-    for(var i in PLAYER_LIST) {
-        var player = PLAYER_LIST[i];
-        player.updatePosition();
-        pack.push({
-            x: player.x,
-            y: player.y,
-            id: player.id,
-            number: player.number,
-        });
-    }
-    //emit the datapack for every socket
-    for(var i in SOCKET_LIST) {
-        var socket = SOCKET_LIST[i]
-        socket.emit('newPositions', pack);
-    }
-},1000/60);
+function update() {
+    setInterval(()=>{
+        var pack = [];
+        //get every player state and push to datapack
+        for(var i in PLAYER_LIST) {
+            var player = PLAYER_LIST[i];
+            player.updatePosition();
+            pack.push({
+                x: player.x,
+                y: player.y,
+                id: player.id,
+                number: player.number,
+            });
+        }
+        //emit the datapack for every socket
+        for(var i in SOCKET_LIST) {
+            var socket = SOCKET_LIST[i]
+            socket.emit('newPositions', pack);
+        }
+    },1000/60);
+}
 
 server.listen(port, host, () => {
     console.log("Server hosting at " + `${host}` + ":" + `${port}`);
 }); 
+
+update();
