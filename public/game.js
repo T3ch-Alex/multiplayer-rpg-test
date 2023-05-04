@@ -9,7 +9,7 @@ const tileSize = 16;
 var tilesheet = new Image();
 tilesheet.src = '/public/assets/world/tilesheet.png';
 
-document.body.style.zoom = "250%";
+document.body.style.zoom = "200%";
 
 var map = [
     [ 30, 30, 30, 30, 75, 19,  3,  3,  3,  3,  3,  3,  3,  3,  3],
@@ -38,6 +38,8 @@ var mapObjects = [
     [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0],
     [  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0]
 ];
+
+
 
 function update() {
     var currentTime = performance.now();
@@ -88,14 +90,14 @@ function getTile(tileIndex) {
 }
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawMap();
-    drawObjects();
+    //drawMap();
+    //drawObjects();
 
-    ctx.fillStyle = '#f00';
-    ctx.font = "8px Arial";
-    ctx.fillText("FPS: " + fps, 10, 20); 
+    //ctx.fillStyle = '#f00';
+    //ctx.font = "8px Arial";
+    //ctx.fillText("FPS: " + fps, 10, 20); 
 }
 
 function loop() {

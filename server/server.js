@@ -19,18 +19,19 @@ var newPlayer = (playerID) => {
         x: 120,
         y: 88,
         id: playerID,
+        number: "" + Math.floor(10 * Math.random()),
         pressingUp: false,
         pressingDown: false,
         pressingLeft: false,
         pressingRight: false,
-        maxSpeed: 10,
+        maxSpeed: 1,
     };
 
     self.updatePosition = () => {
-        if(self.pressingUp) { self.y -= maxSpeed; }
-        if(self.pressingDown) { self.y += maxSpeed; }
-        if(self.pressingLeft) { self.x -= maxSpeed; }
-        if(self.pressingRight) { self.x += maxSpeed; }
+        if(self.pressingUp) { self.y -= self.maxSpeed; }
+        if(self.pressingDown) { self.y += self.maxSpeed; }
+        if(self.pressingLeft) { self.x -= self.maxSpeed; }
+        if(self.pressingRight) { self.x += self.maxSpeed; }
     }
 
     return self;
@@ -63,30 +64,39 @@ io.on('connection', (socket) => {
     });
 
     socket.on('keyPressed', (data) => {
-        io.emit('keyPressed', data);
+        if(data.input === 'up') {
+            player.pressingUp = data.state;
+        } else if(data.input === 'down') {
+            player.pressingDown = data.state;
+        } else if(data.input === 'right') {
+            player.pressingRight = data.state;
+        } else if(data.input === 'left') {
+            player.pressingLeft = data.state;
+        }
     });
-
-    //Update the client with every data every second
-    setInterval(()=>{
-        var pack = [];
-
-        //get every player state and push to datapack
-        for(var i in PLAYER_LIST) {
-            var player = PLAYER_LIST[i];
-            player.updatePosition();
-            pack.push({
-                x: player.x,
-                y: player.y,
-                id: player.id
-            });
-        }
-        //emit the datapack for every socket
-        for(var i in SOCKET_LIST) {
-            var socket = SOCKET_LIST[i]
-            socket.emit('newPositions', pack);
-        }
-    },1000/60);
 });
+
+//Update the client with every data every second
+setInterval(()=>{
+    var pack = [];
+
+    //get every player state and push to datapack
+    for(var i in PLAYER_LIST) {
+        var player = PLAYER_LIST[i];
+        player.updatePosition();
+        pack.push({
+            x: player.x,
+            y: player.y,
+            id: player.id,
+            number: player.number,
+        });
+    }
+    //emit the datapack for every socket
+    for(var i in SOCKET_LIST) {
+        var socket = SOCKET_LIST[i]
+        socket.emit('newPositions', pack);
+    }
+},1000/60);
 
 server.listen(port, host, () => {
     console.log("Server hosting at " + `${host}` + ":" + `${port}`);

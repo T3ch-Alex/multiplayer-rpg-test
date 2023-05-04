@@ -18,53 +18,7 @@
     </div>
     
     <script src="../node_modules/socket.io/client-dist/socket.io.js"></script>
-    <script>
-        var socket = io();
-
-        var messages = document.getElementById('messages');
-        var form = document.getElementById('chatForm');
-        var input = document.getElementById('chatInput');
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            var msg = input.value;
-            if(msg) {
-                socket.emit('clientMessage', msg);
-                msg = '';
-                input.value = '';
-            } else { console.log("no message found!");}
-        });
-
-        socket.on('clientMessage', (msg) => {
-            var msgElement = document.createElement('li');
-            msgElement.id = 'chatMessage';
-            msgElement.textContent = msg;
-            messages.appendChild(msgElement);
-            messages.scrollTop = messages.scrollHeight;
-        });
-
-        socket.on('keyPressed', (data) => {
-          console.log("Pressing: " + data);
-        });
-
-        document.onkeydown = (event) => {
-          let key;
-          if(event.keyCode == 87) {
-            key = 'up';
-            socket.emit('keyPressed', key);
-          } else if(event.keyCode == 83) {
-            key = 'down';
-            socket.emit('keyPressed', key);
-          } else if(event.keyCode == 68) {
-            key = 'right';
-            socket.emit('keyPressed', key);
-          } else if(event.keyCode == 65) {
-            key = 'left';
-            socket.emit('keyPressed', key);
-          }
-        }
-        //socket.on new positions
-    </script>
+    <script type="text/javascript" src="../public/client.js"></script>
     <script type="text/javascript" src="/public/game.js"></script>
   </body>
 </html>

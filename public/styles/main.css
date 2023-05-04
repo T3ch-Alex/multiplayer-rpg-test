@@ -14,13 +14,13 @@ body {
     justify-items: center;
     align-content: center;
     align-items: center;
-    padding: 0.8em;
+    padding: 0.4em;
     zoom: 95%;
 }
 
 canvas {
     background-color: rgba(50%, 50%, 50%, 0.5);
-    padding: 0.8em;
+    padding: 0.4em;
     border-radius: 0.4em;
     border:1px solid lightgrey;
 }
@@ -29,7 +29,7 @@ canvas {
     background-image: linear-gradient(#111, #444);
     background-repeat: no-repeat;
     background-size: cover;
-    padding: 0.8em;
+    padding: 0.4em;
     border-radius: 0.4em;
 }
 
@@ -37,13 +37,14 @@ canvas {
     background-image: linear-gradient(#111, #444);
     background-repeat: no-repeat;
     background-size: cover;
-    border-radius: 0.8em;
+    border-radius: 0.4em;
     width: 280px;
+    height: 100%;
     justify-content: center;
     justify-items: center;
     align-content: center;
     align-items: center;
-    padding: 0.8em;
+    padding: 0.4em;
 }
 
 #messages {
@@ -53,7 +54,7 @@ canvas {
 #chatMessage {
     list-style-type: none;
     color: #fff;
-    font-size: 1.1em;
+    font-size: 0.6em;
     word-break: break-all;
 }
 
@@ -65,19 +66,19 @@ canvas {
 }
 
 #chatInput {
-    width: 95%;
+    width: 90%;
 }
 
 #chatButtonSend {
-    width: 5%;
+    width: 10%;
 }
 
 
 .textContainer {
     background-color: rgba(50%, 50%, 50%, 0.5);
-    padding: 0.8em;
-    height: 5em;
-    border-radius: 0.4em;
+    padding: 0.4em;
+    height: 4em;
+    border-radius: 0.2em;
 }
 
 input {
@@ -85,7 +86,7 @@ input {
     border-radius: 0.4em;
     border: none;
     padding: 0.4em;
-    font-size: 1.1em;
+    font-size: 0.6em;
     color: #fff;
 }
 
@@ -94,6 +95,6 @@ button {
     border-radius: 0.4em;
     border: none;
     padding: 0.4em;
-    font-size: 1.1em;
+    font-size: 0.6em;
     color: #fff;
 }
