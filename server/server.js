@@ -14,26 +14,39 @@ const port = 3000;
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
 
-var newPlayer = (playerID) => {
+var Entity = () => {
     var self = {
-        x: 120,
-        y: 88,
-        id: playerID,
-        number: "" + Math.floor(10 * Math.random()),
-        pressingUp: false,
-        pressingDown: false,
-        pressingLeft: false,
-        pressingRight: false,
-        maxSpeed: 1,
-    };
+        x: 0,
+        y: 0,
+        spdX: 0,
+        spdY: 0,
+        id: "",
+    }
+    self.update = () => {
+        //This will update more stuff later
+        updatePosition();
+    }
+    self.updatePosition = () => {
+        self.x += self.spdX;
+        self.y += self.spdY;
+    }
+};
 
+var newPlayer = (id) => {
+    var self = Entity();
+    self.id = id;
+    self.number = "" + Math.floor(10 * Math.random());
+    self.pressingUp = false;
+    self.pressingDown = false;
+    self.pressingLeft = false;
+    self.pressingRight = false;
+    self.maxSpeed = 1;
     self.updatePosition = () => {
         if(self.pressingUp) { self.y -= self.maxSpeed; }
         if(self.pressingDown) { self.y += self.maxSpeed; }
         if(self.pressingLeft) { self.x -= self.maxSpeed; }
         if(self.pressingRight) { self.x += self.maxSpeed; }
     }
-
     return self;
 };
 

@@ -81,4 +81,22 @@ function getTile(tileIndex) {
     return { index, tileX, tileY };
 }
 
+function draw() {
+    //ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    //drawMap();
+    //drawObjects();
+
+    //ctx.fillStyle = '#f00';
+    //ctx.font = "8px Arial";
+    //ctx.fillText("FPS: " + fps, 10, 20); 
+}
+
+function loop() {
+    //update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+//Start everything
+loop();

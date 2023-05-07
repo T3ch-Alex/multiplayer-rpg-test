@@ -30,6 +30,13 @@ socket.on('clientMessage', (msg) => {
     messages.scrollTop = messages.scrollHeight;
 });
 
+socket.on('newPositions', (data) => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for(var i = 0; i < data.length; i++) {
+        ctx.fillText(data[i].number, data[i].x, data[i].y);
+    }
+});
+
 document.addEventListener('keydown', (event) => {
     if(event.code == 'KeyW') {
         socket.emit('keyPressed', {input: 'up', state:true});
@@ -53,28 +60,3 @@ document.addEventListener('keyup', (event) => {
         socket.emit('keyPressed', {input: 'left', state:false});
     }
 });
-
-function draw() {
-    //ctx.clearRect(0, 0, canvas.width, canvas.height);
-    socket.on('newPositions', (data) => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for(var i = 0; i < data.length; i++) {
-            ctx.fillText(data[i].number, data[i].x, data[i].y);
-        }
-    });
-    //drawMap();
-    //drawObjects();
-
-    //ctx.fillStyle = '#f00';
-    //ctx.font = "8px Arial";
-    //ctx.fillText("FPS: " + fps, 10, 20); 
-}
-
-function loop() {
-    //update();
-    draw();
-    requestAnimationFrame(loop);
-}
-
-//Start everything
-loop();
