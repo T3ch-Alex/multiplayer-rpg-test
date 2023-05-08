@@ -12,27 +12,29 @@ const host = 'localhost';
 const port = 3000;
 
 var SOCKET_LIST = {};
-var PLAYER_LIST = {};
+
 
 var Entity = () => {
     var self = {
-        x: 0,
-        y: 0,
+        x: 120,
+        y: 88,
         spdX: 0,
         spdY: 0,
         id: "",
     }
     self.update = () => {
         //This will update more stuff later
-        updatePosition();
+        self.updatePosition();
     }
     self.updatePosition = () => {
         self.x += self.spdX;
         self.y += self.spdY;
     }
+    return self;
 };
 
-var newPlayer = (id) => {
+
+var Player = (id) => {
     var self = Entity();
     self.id = id;
     self.number = "" + Math.floor(10 * Math.random());
@@ -40,42 +42,28 @@ var newPlayer = (id) => {
     self.pressingDown = false;
     self.pressingLeft = false;
     self.pressingRight = false;
-    self.maxSpeed = 1;
-    self.updatePosition = () => {
-        if(self.pressingUp) { self.y -= self.maxSpeed; }
-        if(self.pressingDown) { self.y += self.maxSpeed; }
-        if(self.pressingLeft) { self.x -= self.maxSpeed; }
-        if(self.pressingRight) { self.x += self.maxSpeed; }
+    self.maxSpd = 1;
+
+    var updatePlayer = self.update;
+    self.update = () => {
+        self.updateSpd();
+        updatePlayer();
     }
+
+    self.updateSpd = () => {
+        if(self.pressingUp) { self.spdY = -self.maxSpd; } else if(self.pressingDown) { self.spdY = +self.maxSpd; } else { self.spdY = 0; }
+        if(self.pressingLeft) { self.spdX = -self.maxSpd; } else if(self.pressingRight) { self.spdX = +self.maxSpd; } else { self.spdX = 0; }
+    }
+
+    Player.list[id] = self;
     return self;
 };
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + '/../public/index.html')); //FIRST WE SERVE ONLY THE HTML!!!
-});
+Player.list = {};
 
-app.use('/', express.static(path.join(__dirname + '/../'))); //THEN WE SERVE THE ENTIRE PUBLIC FOLDER OTHERWISE IT WILL NOT LOAD SOCKET.IO LIBRARY ON THE CLIENT!!!!
-
-io.on('connection', (socket) => {
-    socket.id = Math.floor(Math.random() * 90000) + 10000;
-    SOCKET_LIST[socket.id] = socket;
-
-    var player = newPlayer(socket.id);
-    PLAYER_LIST[socket.id] = player;
-    
+Player.onConnect = (socket) => {
+    var player = Player(socket.id);
     console.log('user with id: ' + `${socket.id}` + ' connected!');
-
-    socket.on('disconnect', () => {
-        console.log('user with id: ' + `${socket.id}` + ' disconnected');
-        delete SOCKET_LIST[socket.id];
-        delete PLAYER_LIST[socket.id];
-    });
-
-    socket.on('clientMessage', (msg) => {
-        var clientMsg = socket.id + ': ' + msg;
-        io.emit('clientMessage', clientMsg);
-    });
-
     socket.on('keyPressed', (data) => {
         if(data.input === 'up') {
             player.pressingUp = data.state;
@@ -87,23 +75,55 @@ io.on('connection', (socket) => {
             player.pressingLeft = data.state;
         }
     });
+}
+
+Player.onDisconnect = (socket) => {
+    console.log('user with id: ' + `${socket.id}` + ' disconnected');
+    delete Player.list[socket.id];
+}
+
+Player.update = () => {
+    var pack = [];
+    for(var i in Player.list) {
+        var player = Player.list[i];
+        player.update();
+        pack.push({
+            x: player.x,
+            y: player.y,
+            id: player.id,
+            number: player.number,
+        });
+    }
+    return pack;
+}
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname + '/../public/index.html')); //FIRST WE SERVE ONLY THE HTML!!!
 });
 
-function update() {
+app.use('/', express.static(path.join(__dirname + '/../'))); //THEN WE SERVE THE ENTIRE PUBLIC FOLDER OTHERWISE IT WILL NOT LOAD SOCKET.IO LIBRARY ON THE CLIENT!!!!
+
+io.on('connection', (socket) => {
+    socket.id = Math.floor(Math.random() * 90000) + 10000;
+    SOCKET_LIST[socket.id] = socket;
+
+    Player.onConnect(socket);
+
+    socket.on('clientMessage', (msg) => {
+        var clientMsg = socket.id + ': ' + msg;
+        io.emit('clientMessage', clientMsg);
+    });
+
+    socket.on('disconnect', () => {
+        Player.onDisconnect(socket);
+        delete SOCKET_LIST[socket.id];
+    });
+});
+
+function gameLoop() {
     setInterval(()=>{
-        var pack = [];
-        //get every player state and push to datapack
-        for(var i in PLAYER_LIST) {
-            var player = PLAYER_LIST[i];
-            player.updatePosition();
-            pack.push({
-                x: player.x,
-                y: player.y,
-                id: player.id,
-                number: player.number,
-            });
-        }
         //emit the datapack for every socket
+        var pack = Player.update();
         for(var i in SOCKET_LIST) {
             var socket = SOCKET_LIST[i]
             socket.emit('newPositions', pack);
@@ -111,8 +131,12 @@ function update() {
     },1000/60);
 }
 
+function playerInputListen(socket, player) {
+    
+}
+
 server.listen(port, host, () => {
     console.log("Server hosting at " + `${host}` + ":" + `${port}`);
 }); 
 
-update();
+gameLoop();
