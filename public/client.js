@@ -10,7 +10,16 @@ var ctx = canvas.getContext('2d');
 var fps = 0;
 var lastTime = performance.now();
 
-document.body.style.zoom = "200%";
+//Tiles dimensions
+const tileSize = 16;
+
+//var tilesheet = new Image();
+//tilesheet.src = '/public/assets/world/tilesheet.png';
+
+var batata = new Image();
+batata.src = '/public/assets/player/batatinha2.png';
+
+document.body.style.zoom = "260%";
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -30,10 +39,16 @@ socket.on('clientMessage', (msg) => {
     messages.scrollTop = messages.scrollHeight;
 });
 
-socket.on('newPositions', (data) => {
+socket.on('updateGame', (data) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for(var i = 0; i < data.length; i++) {
-        ctx.fillText(data[i].number, data[i].x, data[i].y);
+        //ctx.fillStyle = '#fff'
+        //ctx.font = 'Times New Roman';
+        if(batata) {
+            let batataFrameX = getPlayerTile(data[i].frame).tileX;
+            let batataFrameY = getPlayerTile(data[i].frame).tileY;
+            ctx.drawImage(batata, batataFrameX, batataFrameY, tileSize, tileSize, data[i].x, data[i].y, tileSize, tileSize);
+        } else { console.log("fuck"); }
     }
 });
 
@@ -60,3 +75,31 @@ document.addEventListener('keyup', (event) => {
         socket.emit('keyPressed', {input: 'left', state:false});
     }
 });
+
+
+//FUNCTIONS ------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+
+
+function getPlayerTile(tileIndex) {
+    let tileSheetArray = new Array();
+    let sheetRows = 4;
+    let sheetCols = 4;
+    for(var y = 0; y < sheetRows; y++) {
+        for (var x = 0; x < sheetCols; x++) {
+            let tileCoords = new Array(2);
+            tileCoords[0] = x * tileSize;
+            tileCoords[1] = y * tileSize;
+            tileSheetArray.push(tileCoords);
+        }
+    }
+    var index = tileSheetArray[tileIndex];
+    var tileX = tileSheetArray[tileIndex][0];
+    var tileY = tileSheetArray[tileIndex][1];
+
+    return { index, tileX, tileY };
+}

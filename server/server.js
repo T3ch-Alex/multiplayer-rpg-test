@@ -43,6 +43,8 @@ var Player = (id) => {
     self.pressingLeft = false;
     self.pressingRight = false;
     self.maxSpd = 1;
+    self.animCounter = 0;
+    self.animFrame = 0;
 
     var updatePlayer = self.update;
     self.update = () => {
@@ -51,8 +53,69 @@ var Player = (id) => {
     }
 
     self.updateSpd = () => {
-        if(self.pressingUp) { self.spdY = -self.maxSpd; } else if(self.pressingDown) { self.spdY = +self.maxSpd; } else { self.spdY = 0; }
-        if(self.pressingLeft) { self.spdX = -self.maxSpd; } else if(self.pressingRight) { self.spdX = +self.maxSpd; } else { self.spdX = 0; }
+        //UP
+        if(self.pressingUp) { 
+            if(self.animFrame < 4 || self.animFrame > 8) {
+                self.animFrame = 4;
+            }
+            self.spdY = -self.maxSpd; 
+            self.animCounter++;
+            if(self.animCounter >= 10) {
+                self.animFrame++;
+                self.animCounter = 0;
+                if(self.animFrame >= 8) {
+                    self.animFrame = 4;
+                }
+            }
+        //DOWN
+        } else if(self.pressingDown) { 
+            if(self.animFrame > 4) {
+                self.animFrame = 0;
+            }
+            self.spdY = +self.maxSpd; 
+            self.animCounter++;
+            if(self.animCounter >= 10) {
+                self.animFrame++;
+                self.animCounter = 0;
+                if(self.animFrame >= 4) {
+                    self.animFrame = 0;
+                }
+            }
+        } else { 
+            self.spdY = 0; 
+        }
+
+        //LEFT
+        if(self.pressingLeft) { 
+            if(self.animFrame < 8 || self.animFrame > 12) {
+                self.animFrame = 8;
+            }
+            self.spdX = -self.maxSpd; 
+            self.animCounter++
+            if(self.animCounter >= 10) {
+                self.animFrame++;
+                self.animCounter = 0;
+                if(self.animFrame >= 12) {
+                    self.animFrame = 8;
+                }
+            }
+        //RIGHT
+        } else if(self.pressingRight) { 
+            if(self.animFrame < 12) {
+                self.animFrame = 12;
+            }
+            self.spdX = +self.maxSpd; 
+            self.animCounter++
+            if(self.animCounter >= 10) {
+                self.animFrame++;
+                self.animCounter = 0;
+                if(self.animFrame >= 16) {
+                    self.animFrame = 12;
+                }
+            }
+        } else { 
+            self.spdX = 0; 
+        }
     }
 
     Player.list[id] = self;
@@ -91,7 +154,8 @@ Player.update = () => {
             x: player.x,
             y: player.y,
             id: player.id,
-            number: player.number,
+            counter: player.animCounter,
+            frame: player.animFrame,
         });
     }
     return pack;
@@ -126,7 +190,7 @@ function gameLoop() {
         var pack = Player.update();
         for(var i in SOCKET_LIST) {
             var socket = SOCKET_LIST[i]
-            socket.emit('newPositions', pack);
+            socket.emit('updateGame', pack);
         }
     },1000/60);
 }
