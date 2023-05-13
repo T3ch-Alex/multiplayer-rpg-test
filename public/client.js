@@ -19,7 +19,7 @@ const tileSize = 16;
 var batata = new Image();
 batata.src = '/public/assets/player/batatinha2.png';
 
-document.body.style.zoom = "260%";
+document.body.style.zoom = "340%";
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();

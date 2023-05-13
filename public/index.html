@@ -7,14 +7,13 @@
   <body>
     <div id="gameWindow">
       <canvas id="canvas" width="240" height="176"></canvas>
-    </div>
-    
-    <div id="chat">
+      <div id="chat">
         <ul class="textContainer" id="messages"></ul>
         <form class="inputForm" id="chatForm" action="">
             <input id="chatInput" autocomplete="off" maxlength="250"/>
             <button id="chatButtonSend">➤</button>
         </form>
+      </div>
     </div>
     
     <script src="../node_modules/socket.io/client-dist/socket.io.js"></script>

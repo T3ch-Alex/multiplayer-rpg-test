@@ -10,7 +10,7 @@ html {
 body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     justify-items: center;
     align-content: center;
     align-items: center;
@@ -19,14 +19,14 @@ body {
 }
 
 canvas {
-    background-color: rgba(50%, 50%, 50%, 0.5);
-    padding: 0.4em;
     border-radius: 0.4em;
     border:1px solid lightgrey;
     image-rendering: pixelated;
 }
 
 #gameWindow {
+    display: flex;
+    align-items: flex-end;
     background-image: linear-gradient(#111, #444);
     background-repeat: no-repeat;
     background-size: cover;
@@ -35,12 +35,11 @@ canvas {
 }
 
 #chat {
-    background-image: linear-gradient(#111, #444);
+    position: absolute;
     background-repeat: no-repeat;
     background-size: cover;
     border-radius: 0.4em;
-    width: 255px;
-    height: 100%;
+    width: 228px;
     justify-content: center;
     justify-items: center;
     align-content: center;
@@ -68,39 +67,46 @@ canvas {
 
 #chatInput {
     width: 90%;
+    opacity: 1;
+    height: 100%;
 }
 
 #chatButtonSend {
     width: 10%;
+    height: 100%;
 }
 
 
 .textContainer {
-    background-color: rgba(50%, 50%, 50%, 0.5);
-    padding: 0.2em;
-    height: 2em;
+    background-color: rgba(50%, 50%, 50%, 0.1);
+    padding: 0.4em;
+    height: 3em;
     border-radius: 0.2em;
     margin-top: 0.2em;
     margin-bottom: 0.5em;
-    font-size: 0.8em;
+    font-size: 0.4em;
     font-family: 'Times New Roman', Times, serif;
 }
 
 input {
-    background-color: rgba(50%, 50%, 50%, 0.5);
+    background-color: rgba(50%, 50%, 50%, 0.1);
     border-radius: 0.4em;
     border: none;
-    padding: 0.4em;
-    font-size: 0.5em;
+    padding: 0.6em;
+    font-size: 0.2em;
     font-family: 'Times New Roman', Times, serif;
     color: #fff;
 }
 
+input:focus, textarea:focus, select:focus{
+    outline: none;
+}
+
 button {
-    background-color: rgba(50%, 50%, 50%, 0.5);
+    background-color: rgba(50%, 50%, 50%, 0.1);
     border-radius: 0.4em;
     border: none;
-    padding: 0.4em;
-    font-size: 0.6em;
     color: #fff;
+    font-size: 0.2em;
+    font-family: 'Times New Roman', Times, serif;
 }
