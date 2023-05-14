@@ -17,7 +17,7 @@ const tileSize = 16;
 //tilesheet.src = '/public/assets/world/tilesheet.png';
 
 var batata = new Image();
-batata.src = '/public/assets/player/batatinha2.png';
+batata.src = '/public/assets/player/batatinhateste.png';
 
 document.body.style.zoom = "340%";
 
