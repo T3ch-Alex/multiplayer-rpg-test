@@ -7,6 +7,7 @@ const path = require('path'); //Used for finding complex folders paths
 const app = express(); //Init express
 const server = http.createServer(app); //Init a http server with the express app
 const io = new Server(server); //Init new Server object called io with the http server
+const bodyParser = require('body-parser');
 
 const host = 'localhost';
 const port = 3000;
@@ -162,7 +163,7 @@ Player.update = () => {
 }
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + '/../public/index.html')); //FIRST WE SERVE ONLY THE HTML!!!
+    res.sendFile(path.join(__dirname + '/../public/login.html')); //FIRST WE SERVE ONLY THE HTML!!!
 });
 
 app.use('/', express.static(path.join(__dirname + '/../'))); //THEN WE SERVE THE ENTIRE PUBLIC FOLDER OTHERWISE IT WILL NOT LOAD SOCKET.IO LIBRARY ON THE CLIENT!!!!
@@ -171,7 +172,11 @@ io.on('connection', (socket) => {
     socket.id = Math.floor(Math.random() * 90000) + 10000;
     SOCKET_LIST[socket.id] = socket;
 
-    Player.onConnect(socket);
+    socket.on('logIn', () => {
+        Player.onConnect(socket);
+        console.log('login in');
+    });
+    
 
     socket.on('clientMessage', (msg) => {
         var clientMsg = socket.id + ': ' + msg;
