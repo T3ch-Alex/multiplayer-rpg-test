@@ -7,7 +7,6 @@ const path = require('path'); //Used for finding complex folders paths
 const app = express(); //Init express
 const server = http.createServer(app); //Init a http server with the express app
 const io = new Server(server); //Init new Server object called io with the http server
-const bodyParser = require('body-parser');
 
 const host = 'localhost';
 const port = 3000;
@@ -172,9 +171,9 @@ io.on('connection', (socket) => {
     socket.id = Math.floor(Math.random() * 90000) + 10000;
     SOCKET_LIST[socket.id] = socket;
 
-    socket.on('logIn', () => {
+    socket.on('logIn', (data) => {
         Player.onConnect(socket);
-        console.log('login in');
+        io.emit('loginIn', data);
     });
     
 

@@ -11,3 +11,5 @@ loginButton.onclick = () => {
     console.log('clicking login')
     socket.emit('logIn', { emailVal: email.value, passVal: password.value });
 }
+
+socket.on('loginIn', (data) => {console.log(data)});
