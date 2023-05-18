@@ -12,4 +12,7 @@ loginButton.onclick = () => {
     socket.emit('logIn', { emailVal: email.value, passVal: password.value });
 }
 
-socket.on('loginIn', (data) => {console.log(data)});
+socket.on('loginIn', (data) => {
+    console.log(data);
+    //dando b.o na hora de mudar de pagina aqui, tem q fazer no servidor
+});
