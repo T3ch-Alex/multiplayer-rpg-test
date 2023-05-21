@@ -3,6 +3,7 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io'); //Get a Server object inside the socket library
 const path = require('path'); //Used for finding complex folders paths
+const bcrypt = require('bcrypt');
 
 const app = express(); //Init express
 const server = http.createServer(app); //Init a http server with the express app
@@ -13,6 +14,16 @@ const port = 3000;
 
 var SOCKET_LIST = {};
 
+var users = [
+    { id: 1, email: 'user1@email', password: 'password1', role: 1 },
+    { id: 2, email: 'user2@email', password: 'password2', role: 1 },
+    {
+        id: 3,
+        email: 'user3@email',
+        password: '$2b$10$i8za799BsURTTZ746nUFTeqSj8yh04B4gn4.eG9Hkoc2hLOfSoRYi',
+        role: 1
+    }
+];
 
 var Entity = () => {
     var self = {
@@ -167,16 +178,73 @@ app.get('/', (req, res) => {
 
 app.use('/', express.static(path.join(__dirname + '/../'))); //THEN WE SERVE THE ENTIRE PUBLIC FOLDER OTHERWISE IT WILL NOT LOAD SOCKET.IO LIBRARY ON THE CLIENT!!!!
 
+
+
+
 io.on('connection', (socket) => {
     socket.id = Math.floor(Math.random() * 90000) + 10000;
     SOCKET_LIST[socket.id] = socket;
 
+    socket.on('createAcc', (data) => {
+        const existingUser = users.find(user => user.email === data.email);
+        const saltRounds = 10;
+
+        if(existingUser) {
+            let msg = "Account already exists with this email";
+            io.emit('errMsg', msg);
+        }
+
+        //Gerar o salt, depois gerar o hash com o salt
+        bcrypt.genSalt(saltRounds, (err, salt) => {
+            if(err) {
+                let msg = "Internal server error";
+                io.emit('errMsg', msg);
+            }
+            bcrypt.hash(data.password, salt, (err, hashedPassword) => {
+                if(err) {
+                    let msg = "Internal server error";
+                    io.emit('errMsg', msg);
+                }
+
+                //Se gerado, criar novo usuario
+                const newUser = { 
+                    id: users.length + 1, 
+                    email: data.email, 
+                    password: hashedPassword,
+                    role: 1
+                };
+
+                users.push(newUser);
+
+                let msg = "User registered succesfully!";
+                console.log(users);
+                io.emit('errMsg', msg);
+            });
+        });
+    });
+
     socket.on('logIn', (data) => {
-        Player.onConnect(socket);
-        io.emit('loginIn', data);
+        const userFound = users.find(user => users.email === data.email);
+        if(!userFound) {
+            let msg = "Authentication failed!";
+            io.emit('errMsg', msg);
+        }
+        console.log(users);
+
+        //Comparar password com o hash na database
+        bcrypt.compare(data.password, userFound.password, (err, result) => {
+            if(err || !result) {
+                let msg = "Authentication failed!";
+                
+                io.emit('errMsg', msg);
+            }
+            Player.onConnect(socket);
+            let msg = "Congrats, youve logged in " + userFound + "!!";
+            io.emit('loginIn', msg);
+            res.sendStatus(200);
+        });
     });
     
-
     socket.on('clientMessage', (msg) => {
         var clientMsg = socket.id + ': ' + msg;
         io.emit('clientMessage', clientMsg);
@@ -197,10 +265,6 @@ function gameLoop() {
             socket.emit('updateGame', pack);
         }
     },1000/60);
-}
-
-function playerInputListen(socket, player) {
-    
 }
 
 server.listen(port, host, () => {
