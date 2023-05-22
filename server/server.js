@@ -11,6 +11,7 @@ const io = new Server(server); //Init new Server object called io with the http 
 
 const host = 'localhost';
 const port = 3000;
+const FPS = 60;
 
 var SOCKET_LIST = {};
 
@@ -192,6 +193,7 @@ io.on('connection', (socket) => {
         if(existingUser) {
             let msg = "Account already exists with this email";
             io.emit('errMsg', msg);
+            return
         }
 
         //Gerar o salt, depois gerar o hash com o salt
@@ -199,11 +201,13 @@ io.on('connection', (socket) => {
             if(err) {
                 let msg = "Internal server error";
                 io.emit('errMsg', msg);
+                return
             }
             bcrypt.hash(data.password, salt, (err, hashedPassword) => {
                 if(err) {
                     let msg = "Internal server error";
                     io.emit('errMsg', msg);
+                    return
                 }
 
                 //Se gerado, criar novo usuario
@@ -219,29 +223,31 @@ io.on('connection', (socket) => {
                 let msg = "User registered succesfully!";
                 console.log(users);
                 io.emit('errMsg', msg);
+                return
             });
         });
     });
 
     socket.on('logIn', (data) => {
-        const userFound = users.find(user => users.email === data.email);
+        const userFound = users.find(userFound => userFound.email === data.email);
         if(!userFound) {
-            let msg = "Authentication failed!";
+            let msg = "Authentication failed at userFound!";
             io.emit('errMsg', msg);
+            return
         }
         console.log(users);
 
         //Comparar password com o hash na database
         bcrypt.compare(data.password, userFound.password, (err, result) => {
             if(err || !result) {
-                let msg = "Authentication failed!";
-                
+                let msg = "Authentication failed! at password";
                 io.emit('errMsg', msg);
+                return
             }
             Player.onConnect(socket);
-            let msg = "Congrats, youve logged in " + userFound + "!!";
+            let msg = "Congrats, youve logged in " + userFound.email + "!!";
             io.emit('loginIn', msg);
-            res.sendStatus(200);
+            return
         });
     });
     
@@ -264,7 +270,7 @@ function gameLoop() {
             var socket = SOCKET_LIST[i]
             socket.emit('updateGame', pack);
         }
-    },1000/60);
+    },1000/FPS);
 }
 
 server.listen(port, host, () => {
