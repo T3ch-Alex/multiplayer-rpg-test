@@ -247,7 +247,6 @@ io.on('connection', (socket) => {
             Player.onConnect(socket);
             let msg = "Congrats, youve logged in " + userFound.email + "!!";
             io.emit('loginIn', msg);
-            return
         });
     });
     

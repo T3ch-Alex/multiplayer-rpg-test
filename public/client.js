@@ -1,4 +1,4 @@
-var socket = io();
+//var socket = io();
 
 var messages = document.getElementById('messages');
 var form = document.getElementById('chatForm');

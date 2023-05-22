@@ -18,7 +18,18 @@
           <button id="createAccButton">Sign up</button>
         </div>
     </div>
+    <div id="gameWindow">
+      <canvas id="canvas" width="240" height="176"></canvas>
+      <div id="chat">
+        <ul class="textContainer" id="messages"></ul>
+        <form class="inputForm" id="chatForm" action="">
+            <input id="chatInput" autocomplete="off" maxlength="250"/>
+            <button id="chatButtonSend">➤</button>
+        </form>
+      </div>
+    </div>
     <script src="../node_modules/socket.io/client-dist/socket.io.js"></script>
     <script src="../public/login.js" type="text/javascript"></script>
+    <script src="../public/client.js" type="text/javascript"></script>
   </body>
 </html>

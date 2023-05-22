@@ -1,11 +1,14 @@
 var socket = io();
+var game = document.getElementById('gameWindow');
+game.style.display = 'none';
+var login = document.getElementById('loginContainer');
 
+//LOGIN
 var emailInput = document.getElementById('email');
 var passwordInput = document.getElementById('password');
 var loginButton = document.getElementById('loginButton');
 var createAccButton = document.getElementById('createAccButton');
 document.body.style.zoom = "340%";
-
 
 loginButton.onclick = () => {
     console.log('clicking login')
@@ -18,10 +21,12 @@ createAccButton.onclick = () => {
 }
 
 socket.on('loginIn', (data) => {
-    console.log(data);
-    //dando b.o na hora de mudar de pagina aqui, tem q fazer no servidor
+    console.log('Now make enter the game');
+    login.style.display = 'none';
+    game.style.display = 'flex';
 });
 
 socket.on('errMsg', (msg) => {
     console.log(msg);
 }); 
+
