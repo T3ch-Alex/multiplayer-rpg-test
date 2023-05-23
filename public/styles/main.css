@@ -1,5 +1,5 @@
 html {
-    background-image: linear-gradient(#444,#111);
+    background-color: #111; 
     background-repeat: no-repeat;
     background-position: center center;
     background-attachment: fixed;
@@ -15,16 +15,17 @@ body {
     align-content: center;
     align-items: center;
     padding: 0.4em;
-    zoom: 95%;
 }
 
 canvas {
+    width: 95vw;
+    height: 100vh;
     border-radius: 0.4em;
     border:1px solid lightgrey;
     image-rendering: pixelated;
 }
 
-#loginBody {
+#gameBody {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -32,8 +33,6 @@ canvas {
     align-content: center;
     align-items: center;
     padding: 0.4em;
-    zoom: 95%;
-    height: 50%;
 }
 
 #loginContainer {
@@ -71,16 +70,24 @@ canvas {
     display: flex;
     flex-direction: row;
     gap: 0.4em;
+    justify-content: center;
 }
 
 #loginButton, #createAccButton {
-    background-color: rgba(50%, 50%, 50%, 0.5);
+    
     border-radius: 0.8em;
     border: none;
-    width: 100%;
-    color: #222;
+    color: #fff;
     font-size: 0.2em;
     font-family: 'Times New Roman', Times, serif;
+}
+
+#loginButton {
+    background-color: rgba(0%, 50%, 0%, 0.5);
+}
+
+#createAccButton {
+    background-color: rgba(0%, 25%, 75%, 0.5);
 }
 
 #gameWindow {
@@ -98,7 +105,7 @@ canvas {
     background-repeat: no-repeat;
     background-size: cover;
     border-radius: 0.4em;
-    width: 228px;
+    width: 25%;
     justify-content: center;
     justify-items: center;
     align-content: center;

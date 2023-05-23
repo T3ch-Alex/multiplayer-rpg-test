@@ -24,6 +24,7 @@ socket.on('loginIn', (data) => {
     console.log('Now make enter the game');
     login.style.display = 'none';
     game.style.display = 'flex';
+    document.body.style.zoom = '0%';
 });
 
 socket.on('errMsg', (msg) => {
