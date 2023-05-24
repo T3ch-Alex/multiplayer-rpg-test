@@ -19,8 +19,6 @@ const tileSize = 16;
 var batata = new Image();
 batata.src = '/public/assets/player/batatinhateste.png';
 
-document.body.style.zoom = "340%";
-
 form.addEventListener('submit', (e) => {
     e.preventDefault();
     var msg = input.value;
