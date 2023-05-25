@@ -101,7 +101,7 @@ canvas {
 
 #chat {
     z-index: 100;
-    width: 33vw;
+    width: 25vw;
     border-radius: 0.6em;
     align-items: center;
     zoom: 200%
