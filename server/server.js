@@ -9,22 +9,17 @@ const app = express(); //Init express
 const server = http.createServer(app); //Init a http server with the express app
 const io = new Server(server); //Init new Server object called io with the http server
 
+const mongojs = require('mongojs');
+const connectionString = 'mongodb://localhost:27017/multiplayer-game';
+const db = mongojs(connectionString);
+const accounts = db.collection('accounts');
+const characters = db.collection('characters');
+
 const host = 'localhost';
 const port = 3000;
 const FPS = 60;
 
 var SOCKET_LIST = {};
-
-var users = [
-    { id: 1, email: 'user1@email', password: 'password1', role: 1 },
-    { id: 2, email: 'user2@email', password: 'password2', role: 1 },
-    {
-        id: 3,
-        email: 'user3@email',
-        password: '$2b$10$i8za799BsURTTZ746nUFTeqSj8yh04B4gn4.eG9Hkoc2hLOfSoRYi',
-        role: 1
-    }
-];
 
 var Entity = () => {
     var self = {
@@ -187,7 +182,7 @@ io.on('connection', (socket) => {
     SOCKET_LIST[socket.id] = socket;
 
     socket.on('createAcc', (data) => {
-        const existingUser = users.find(user => user.email === data.email);
+        const existingUser = accounts.find(account => account.email === data.email);
         const saltRounds = 10;
 
         if(existingUser) {
@@ -211,17 +206,16 @@ io.on('connection', (socket) => {
                 }
 
                 //Se gerado, criar novo usuario
-                const newUser = { 
-                    id: users.length + 1, 
+                const newAccount = { 
+                    id: accounts.length + 1, 
                     email: data.email, 
                     password: hashedPassword,
                     role: 1
                 };
 
-                users.push(newUser);
+                accounts.push(newAccount);
 
                 let msg = "User registered succesfully!";
-                console.log(users);
                 io.emit('errMsg', msg);
                 return
             });
