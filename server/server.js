@@ -182,7 +182,7 @@ io.on('connection', (socket) => {
     SOCKET_LIST[socket.id] = socket;
 
     socket.on('createAcc', (data) => {
-        const existingUser = accounts.find(account => account.email === data.email);
+        const existingUser = accounts.findOne( { email: `${data.email}` } );
         const saltRounds = 10;
 
         if(existingUser) {
@@ -213,7 +213,7 @@ io.on('connection', (socket) => {
                     role: 1
                 };
 
-                accounts.push(newAccount);
+                accounts.insertOne(newAccount);
 
                 let msg = "User registered succesfully!";
                 io.emit('errMsg', msg);
@@ -223,13 +223,13 @@ io.on('connection', (socket) => {
     });
 
     socket.on('logIn', (data) => {
-        const userFound = users.find(userFound => userFound.email === data.email);
+        const userFound = accounts.findOne( { email: `${data.email}`} );
         if(!userFound) {
             let msg = "Authentication failed at userFound!";
             io.emit('errMsg', msg);
             return
         }
-        console.log(users);
+        console.log(accounts);
 
         //Comparar password com o hash na database
         bcrypt.compare(data.password, userFound.password, (err, result) => {
