@@ -17,7 +17,7 @@ loginButton.onclick = () => {
 
 createAccButton.onclick = () => {
     console.log('clicking createAcc');
-    socket.emit('createAcc', { email: emailInput.value, password: passwordInput.value })
+    socket.emit('createAcc', { email: emailInput.value, password: passwordInput.value });
 }
 
 socket.on('loginIn', (data) => {

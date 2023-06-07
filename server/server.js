@@ -182,11 +182,12 @@ io.on('connection', (socket) => {
     SOCKET_LIST[socket.id] = socket;
 
     socket.on('createAcc', (data) => {
-        const existingUser = accounts.findOne( { email: `${data.email}` }, (err) => {
-            if(err) {
+        const existingUser = accounts.find( { email: 'user1' }, (err, result) => {
+            if(err || !result) {
                 console.log('Internal server Error, user not found. Error: ', err);
                 let msg = "Internal server Error, user not found. Error: " + err;
                 io.emit('errMsg', msg);
+                return
             }
         });
         const saltRounds = 10;
@@ -229,13 +230,22 @@ io.on('connection', (socket) => {
     });
 
     socket.on('logIn', (data) => {
-        const userFound = accounts.findOne( { email: `${data.email}`}, (err) => {
-            if(err) {
+        console.log(data);
+        const userFound = accounts.find( { email: data.email }, (err, result) => {
+            if(err || !result) {
                 console.log('Internal server Error, user not found. Error: ', err);
                 let msg = "Internal server Error, user not found. Error: " + err;
                 io.emit('errMsg', msg);
+                return
             }
         });
+
+        if(!userFound) {
+            console.log('User not found.');
+            let msg = "User with this email not found.";
+            io.emit('errMsg', msg);
+            return
+        }
 
         //Comparar password com o hash na database
         bcrypt.compare(data.password, userFound.password, (err, result) => {
