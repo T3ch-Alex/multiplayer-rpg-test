@@ -182,13 +182,15 @@ io.on('connection', (socket) => {
     SOCKET_LIST[socket.id] = socket;
 
     socket.on('createAcc', (data) => {
-        const existingUser = accounts.find( { email: 'user1' }, (err, result) => {
-            if(err || !result) {
+        var existingUser = accounts.find( { email: data.email }, (err, result) => {
+            if(err) {
                 console.log('Internal server Error, user not found. Error: ', err);
                 let msg = "Internal server Error, user not found. Error: " + err;
                 io.emit('errMsg', msg);
                 return
             }
+
+            existingUser = result;
         });
         const saltRounds = 10;
 
@@ -230,11 +232,21 @@ io.on('connection', (socket) => {
     });
 
     socket.on('logIn', (data) => {
-        console.log(data);
-        const userFound = accounts.find( { email: data.email }, (err, result) => {
+        var userFound;
+        accounts.find( { email: data.email }, (err, result) => {
             if(err || !result) {
-                console.log('Internal server Error, user not found. Error: ', err);
-                let msg = "Internal server Error, user not found. Error: " + err;
+                let msg = "Internal server error";
+                io.emit('errMsg', msg);
+                return
+            }
+
+            if(result.length > 0) {
+                userFound = result[0];
+                console.log(userFound)
+            }
+            
+            if(result.length > 1) {
+                let msg = "Internal server error";
                 io.emit('errMsg', msg);
                 return
             }
