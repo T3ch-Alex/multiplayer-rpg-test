@@ -10,10 +10,10 @@ const server = http.createServer(app); //Init a http server with the express app
 const io = new Server(server); //Init new Server object called io with the http server
 
 const mongojs = require('mongojs');
-const connectionString = 'mongodb://localhost:27017/multiplayer-game';
+const connectionString = 'mongodb://0.0.0.0:27017/multiplayer-game';
 const db = mongojs(connectionString);
 const accounts = db.collection('accounts');
-const characters = db.collection('characters');
+//const characters = db.collection('characters');
 
 const host = 'localhost';
 const port = 3000;
@@ -182,51 +182,51 @@ io.on('connection', (socket) => {
     SOCKET_LIST[socket.id] = socket;
 
     socket.on('createAcc', (data) => {
-        var existingUser = accounts.find( { email: data.email }, (err, result) => {
+        var existingUser; 
+        const saltRounds = 10;
+        
+        accounts.find( { email: data.email }, (err, result) => {
             if(err) {
                 console.log('Internal server Error, user not found. Error: ', err);
                 let msg = "Internal server Error, user not found. Error: " + err;
                 io.emit('errMsg', msg);
                 return
             }
+            existingUser = result[0]; 
 
-            existingUser = result;
-        });
-        const saltRounds = 10;
-
-        if(existingUser) {
-            let msg = "Account already exists with this email";
-            io.emit('errMsg', msg);
-            return
-        }
-
-        //Gerar o salt, depois gerar o hash com o salt
-        bcrypt.genSalt(saltRounds, (err, salt) => {
-            if(err) {
-                let msg = "Internal server error";
+            if(existingUser) {
+                let msg = "Account already exists with this email";
                 io.emit('errMsg', msg);
                 return
             }
-            bcrypt.hash(data.password, salt, (err, hashedPassword) => {
+
+            //Gerar o salt, depois gerar o hash com o salt
+            bcrypt.genSalt(saltRounds, (err, salt) => {
                 if(err) {
                     let msg = "Internal server error";
                     io.emit('errMsg', msg);
                     return
                 }
+                bcrypt.hash(data.password, salt, (err, hashedPassword) => {
+                    if(err) {
+                        let msg = "Internal server error";
+                        io.emit('errMsg', msg);
+                        return
+                    }
 
-                //Se gerado, criar novo usuario
-                const newAccount = { 
-                    id: accounts.length + 1, 
-                    email: data.email, 
-                    password: hashedPassword,
-                    role: 1
-                };
+                    //Se gerado, criar novo usuario
+                    const newAccount = { 
+                        email: data.email, 
+                        password: hashedPassword,
+                        role: 1
+                    };
 
-                accounts.insertOne(newAccount);
+                    accounts.insertOne(newAccount);
 
-                let msg = "User registered succesfully!";
-                io.emit('errMsg', msg);
-                return
+                    let msg = "User registered succesfully!";
+                    io.emit('errMsg', msg);
+                    return
+                });
             });
         });
     });
@@ -234,41 +234,31 @@ io.on('connection', (socket) => {
     socket.on('logIn', (data) => {
         var userFound;
         accounts.find( { email: data.email }, (err, result) => {
-            if(err || !result) {
+            if(err || !result || result.length > 1) {
                 let msg = "Internal server error";
                 io.emit('errMsg', msg);
                 return
             }
-
             if(result.length > 0) {
                 userFound = result[0];
-                console.log(userFound)
-            }
-            
-            if(result.length > 1) {
-                let msg = "Internal server error";
+            }    
+            if(!userFound) {
+                console.log('User not found.');
+                let msg = "User with this email not found.";
                 io.emit('errMsg', msg);
                 return
             }
-        });
-
-        if(!userFound) {
-            console.log('User not found.');
-            let msg = "User with this email not found.";
-            io.emit('errMsg', msg);
-            return
-        }
-
-        //Comparar password com o hash na database
-        bcrypt.compare(data.password, userFound.password, (err, result) => {
-            if(err || !result) {
-                let msg = "Authentication failed! at password";
-                io.emit('errMsg', msg);
-                return
-            }
-            Player.onConnect(socket);
-            let msg = "Congrats, youve logged in " + userFound.email + "!!";
-            io.emit('loginIn', msg);
+            //Comparar password com o hash na database
+            bcrypt.compare(data.password, userFound.password, (err, result) => {
+                if(err || !result) {
+                    let msg = "Authentication failed! at password";
+                    io.emit('errMsg', msg);
+                    return
+                }
+                Player.onConnect(socket);
+                let msg = "Congrats, youve logged in " + userFound.email + "!!";
+                io.emit('loginIn', msg);
+            });        
         });
     });
     
